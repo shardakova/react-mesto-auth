@@ -37,29 +37,27 @@ function App () {
       });
   }, []);
 
-  function onKeyup (event) {
-    if (event.key === 'Escape') {
-      closeAllPopups();
-    }
-  }
+  const isPopupOpen = (
+    isEditProfilePopupOpen ||
+    isAddPlacePopupOpen ||
+    isEditAvatarPopupOpen ||
+    confirmDeletionCardId
+  );
 
   useEffect(() => {
-    if (
-      isEditProfilePopupOpen ||
-      isAddPlacePopupOpen ||
-      isEditAvatarPopupOpen ||
-      confirmDeletionCardId
-    ) {
-      document.addEventListener('keyup', onKeyup);
-    } else {
-      document.removeEventListener('keyup', onKeyup);
+    function closeByEscape (event) {
+      if (event.key === 'Escape') {
+        closeAllPopups();
+      }
     }
-  }, [
-    isEditProfilePopupOpen,
-    isAddPlacePopupOpen,
-    isEditAvatarPopupOpen,
-    confirmDeletionCardId
-  ]);
+
+    if (isPopupOpen) {
+      document.addEventListener('keyup', closeByEscape);
+      return function () {
+        document.removeEventListener('keyup', closeByEscape);
+      };
+    }
+  }, [isPopupOpen]);
 
   function handleCardClick (card) {
     setSelectedCard(card);
@@ -139,7 +137,6 @@ function App () {
       })
       .catch(err => {
         console.error(err);
-        closeAllPopups();
       })
       .finally(() => {
         setIsFormLoading(false);
@@ -155,7 +152,6 @@ function App () {
       })
       .catch(err => {
         console.error(err);
-        closeAllPopups();
       })
       .finally(() => {
         setIsFormLoading(false);

@@ -14,14 +14,14 @@ function Login () {
   const [onInput, errors, isValid] = useValidation();
   const [isFormLoading, setIsFormLoading] = useState(false);
   const [isSignedInWithError, setIsSignedInWithError] = useState(false);
-  const emailRef = React.createRef();
-  const passwordRef = React.createRef();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   function handleSubmit () {
     setIsFormLoading(true);
     auth.signIn({
-      email: emailRef.current.value,
-      password: passwordRef.current.value
+      email,
+      password
     }, err => {
       if (err) {
         setIsSignedInWithError(true);
@@ -47,9 +47,9 @@ function Login () {
           <h3 className="sign_in_form__title">Вход</h3>
           <div className="sign_in_form__field">
             <input
-              ref={emailRef}
               onInput={(event) => {
                 onInput(event);
+                setEmail(event.target.value);
               }}
               className="sign_in_form__input"
               type="email"
@@ -62,9 +62,9 @@ function Login () {
           </div>
           <div className="sign_in_form__field">
             <input
-              ref={passwordRef}
               onInput={(event) => {
                 onInput(event);
+                setPassword(event.target.value);
               }}
               className="sign_in_form__input"
               type="password"

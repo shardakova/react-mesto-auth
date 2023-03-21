@@ -1,17 +1,18 @@
 import React, { useEffect } from 'react';
 
 function InfoTooltip (props) {
-  function onKeyup (event) {
-    if (event.key === 'Escape') {
-      props.onClose();
-    }
-  }
-
   useEffect(() => {
+    function closeByEscape (event) {
+      if (event.key === 'Escape') {
+        props.onClose();
+      }
+    }
+
     if (props.isOpen) {
-      document.addEventListener('keyup', onKeyup);
-    } else {
-      document.removeEventListener('keyup', onKeyup);
+      document.addEventListener('keyup', closeByEscape);
+      return function () {
+        document.removeEventListener('keyup', closeByEscape);
+      };
     }
   }, [props.isOpen]);
 
